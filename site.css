@@ -1,0 +1,143 @@
+
+body
+{
+	font-family:arial,sans-serif;
+	font-size:13px; 
+	background:#EEEEEE;
+	margin:0px;
+	padding:20px;
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0px;
+	left:0px;
+	bottom:0px;
+	right:0px;
+}
+ 
+
+.basicbutton
+{
+	display: inline;
+	background-color: #cccccc;
+	border-radius: 2px;
+	
+}
+
+.basicbutton:hover {
+	background-color: #ffffff; color: #333366;
+}
+
+.title
+{
+	font-size:24px;
+	margin-bottom:-3px;
+	color: #1C77AC;
+	font-weight:normal;
+	text-shadow: 2px 2px 2px #ffffff;
+}
+
+.postDate
+{
+	font-size:10px;
+ 
+	color: #1C77AC;
+	font-weight:normal;
+	text-shadow: 2px 2px 2px #ffffff;
+	display: inline-block;
+	background-color: #eeeeee;
+ 
+	vertical-align:top;
+}
+.postClip
+{
+	font-size:14px;
+ 
+	margin-left:10px;
+	color: #000000;
+	font-weight:normal;
+	display: inline-block;
+	width:80%;
+}
+
+.postRow
+{
+	font-size:12px;
+	margin-bottom:10px;
+	color: #1C77AC;
+	font-weight:normal;
+	width: 95%;
+	border:1px solid #999999;
+ 
+}
+
+.downloadLink
+{
+
+  margin-left:105px;
+}
+
+.clipTools
+{
+  float: right;
+	margin-left:10px;
+  vertical-align:top;
+	width: 20px;
+	display: inline-block;
+}
+.clipFormButtons
+{
+	margin-left:10px;
+	display: inline;
+	vertical-align: text-top;
+	height: 80px;
+	width: 120px;
+ 
+ 
+}
+.loggedin  
+{
+	padding:1px;
+  	font-size:9px;
+	font-weight:bold;
+	text-align:left;
+	vertical-align:top;
+	background:#f8f8f8;
+}
+
+.genericform {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: 1fr 1fr;
+}
+
+.genericformelementlabel {
+ 	text-align: right	;
+}
+.genericformelementinput {
+ 	text-align: left;
+}
+
+.genericformerror {
+	font-size: 10px;
+	color: red;
+}
+ 
+ 
+a:link {
+	color:#1C77AC;
+	text-decoration:none;
+
+}
+a:visited {
+	color:#1C77AC
+
+}
+a:hover{
+	color:#AC771C;
+
+}
+
+ul { 
+	ist-style: none; }
+
