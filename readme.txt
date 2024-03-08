@@ -1,6 +1,7 @@
 #WebClipBoard
 
 This version of WebClipBoad seeks to serve as more of communication system, facilitating the creation of things like blogs and messageboards.
+To support this, I needed to add permission-related columns to clipboard_item. I also made it so clipboard_items can belong to other clipboard_items.
 
 To use this, you will need to run the WebClipBoard.sql file on a MySQL server you control.  
 
