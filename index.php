@@ -22,6 +22,8 @@ $typeId = gvfw("type_id");
 $action = gvfw("action");
 $otherUserId = gvfw("other_user_id");
 $parentClipboardItemId = gvfw("parent_clipboard_item_id");
+
+ 
 if(gvfw("mode")) {
  
   $mode = gvfw('mode');
@@ -31,7 +33,7 @@ if(gvfw("mode")) {
     die();
   }
   
-	
+ 
 	if ($mode == "login") {
 		loginUser();
 	} else if (strtolower($mode) == "create user") {
@@ -51,6 +53,55 @@ if(gvfw("mode")) {
 		$friendly = gvfw("friendly");
 		download($path, $friendly);
 		die();
+		
+	} else if ($mode == "json"  && $user) {
+
+    $table = gvfw("table");
+    $pk = gvfw("pk");
+    $lastPkValue = gvfw($pk);
+    $value =  gvfw("value");
+    $limit =  100;
+    $hashedEntities = gvfw("hashed_entities");
+    	
+    //$calculatedHasedEntities = hash_hmac('sha256',$table .$pk, $encryptionPassword);
+    //if($hashedEntities == $calculatedHasedEntities) {
+      if($table == "clipboard_item") {
+ 
+        $userId  = $user["user_id"];
+        $sql = "SELECT *, i.created AS clip_created, u.email AS  other_email,  u.user_id As author_id ," .  $user["user_id"]  ." AS our_user_id   FROM `clipboard_item` i LEFT JOIN user u ON u.user_id=i.user_id LEFT JOIN user o on o.user_id=i.other_user_id WHERE (i.user_id = " . $user["user_id"]. " OR i.other_user_id = " . $user["user_id"] . ")";
+        $sql .=  " AND clipboard_item_id> " . intval($lastPkValue);
+        if($value) {
+         $sql .= " AND i.type_id=" . intval($value); 
+        }
+      }
+      $sql .= " ORDER BY i.created DESC LIMIT 0,100";
+      $out = "";
+      //echo $sql;
+      //die();
+      $result = mysqli_query($conn, $sql);
+      $out = [];
+      if($result) {
+        $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        foreach($rows as &$row) {
+          //$calculatedHasedEntities = hash_hmac('sha256', $column . $table .$pk . $pkValue , $encryptionPassword);
+          $hashedEntities = hash_hmac('sha256', "type_id" . $table .$pk . $row[$pk] , $encryptionPassword);
+          $row["hashed_entities"] = $hashedEntities;
+          $row["password"] = "";
+        }
+        $out["clips"]= $rows;
+        //probably not very DRY:
+        $sql = "SELECT name as text, clipboard_item_type_id as value  FROM clipboard_item_type  WHERE user_id = " . intval($user["user_id"]) . " ORDER BY name asc";
+        $result = mysqli_query($conn, $sql);
+        if($result) {
+          $rows =  mysqli_fetch_all($result, MYSQLI_ASSOC);
+          $out["clipTypes"]= $rows;
+        }
+    
+        
+        die(json_encode($out));
+      }
+    
+    //}
 	} else if ($mode == "crud"  && $user) {
  
     $table = gvfw("table");
@@ -69,6 +120,7 @@ if(gvfw("mode")) {
       }
       //die($sql);
       $result = mysqli_query($conn, $sql);
+      die($value );
       //$row = $result->fetch_assoc();
     
     }
@@ -93,8 +145,8 @@ if($user) {
 	$out .= "<div>\n";
 	$out .= clipForm($typeId, "");
 	$out .= "</div>\n";
-	$out .= "<div>\n";
-	$out .= clips($typeId);
+	$out .= "<div id='clips'>\n";
+	//$out .= clips($typeId);
 	$out .= "</div>\n";
 } else if ($mode == "startnewuser" || !is_null($createUserErrors)) {
 	$out .= "<div class='loggedin'>You are logged out. <div class='basicbutton'><a href=\"?mode=login\">log in</a></div></div>\n"; 
