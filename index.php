@@ -20,6 +20,8 @@ $createUserErrors = NULL;
 //$formatedDateTime =  $date->format('H:i');
 $typeId = gvfw("type_id");
 $action = gvfw("action");
+$otherUserId = gvfw("other_user_id");
+$parentClipboardItemId = gvfw("parent_clipboard_item_id");
 if(gvfw("mode")) {
  
   $mode = gvfw('mode');
@@ -35,8 +37,8 @@ if(gvfw("mode")) {
 	} else if (strtolower($mode) == "create user") {
 		$createUserErrors = createUser();
 	} else if (strtolower($mode) == "save clip" && $user != false) {
-	
-		saveClip($user["user_id"], gvfw("clip", ""), gvfw("clipboard_item_type_id", ""));
+    
+		saveClip($user["user_id"], gvfw("clip", ""), gvfw("clipboard_item_type_id", ""), $otherUserId, $parentClipboardItemId);
 	
 	
 	} else if ($mode == "Save Clip" && $user != false) {
@@ -89,7 +91,7 @@ function normalizePostData() {
 if($user) {
 	$out .= "<div class='loggedin'>You are logged in as <b>" . $user["email"] . "</b> <div class='basicbutton'><a href=\"?mode=logout\">logout</a></div></div>\n"; 
 	$out .= "<div>\n";
-	$out .= clipForm($typeId);
+	$out .= clipForm($typeId, "");
 	$out .= "</div>\n";
 	$out .= "<div>\n";
 	$out .= clips($typeId);
@@ -197,7 +199,7 @@ function genericForm($data, $submitLabel) { //$data also includes any errors
 	return $out;
 }
 
-function clipForm($typeId) {
+function clipForm($typeId, $otherUserId) {
   $out = "";
   $out .= "<div>\n";
   $out .= "<form method='post' name='clipForm' id='clipForm'  enctype='multipart/form-data'>\n";
@@ -209,13 +211,32 @@ function clipForm($typeId) {
   $out .= "</div>\n";
   $out .= "<div class='clipFormButtons'>\n";
   $out .= "<input type='file' id='clipfile' name='clipfile'>\n \n";
-  $out .= clipTypeDropdown($typeId, $onChange);
-  $out .= "<input name='mode' value='Save Clip' type='submit'>\n";
+  $typeDropdown =  clipTypeDropdown($typeId, $onChange);
+  if($typeDropdown) {
+    $out .= "Type: " . $typeDropdown;
+  }
+  $out .= " Send to: " . userDropdown($otherUserId, "");
+  $out .= "<input name='mode' value='Save Clip' type='submit'/>\n";
+  $out .= "<input name='parent_clipboard_item_id' id='parent_clipboard_item_id' value='' type='hidden'/>\n";
+
   $out .= "</div>\n";
   $out .= "</form>\n";
   $out .= "</div>\n";
   return $out;
 }
+
+
+
+function userDropdown($default = "", $onChange = "", $jsId = "other_user_id") {
+  global $conn, $user;
+  $sql = "SELECT email as text, user_id as value  FROM user  WHERE user_id <> " . intval($user["user_id"]) . " ORDER BY email asc";
+  $result = mysqli_query($conn, $sql);
+  if($result) {
+    $rows =  mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return genericSelect($jsId, $jsId, $default, $rows, "onchange", $onChange);
+  }
+}
+
 
 function clipTypeDropdown($default = "", $onChange = "", $jsId = "clipboard_item_type_id") {
   global $conn, $user;
@@ -302,8 +323,9 @@ function createUser(){
   global $encryptionPassword;
   global $timezone;
   $errors = NULL;
-  $date = new DateTime("now", new DateTimeZone('America/New_York'));//obviously, you would use your timezone, not necessarily mine
-  $formatedDateTime =  $date->format($timezone); 
+  $date = new DateTime("now", new DateTimeZone($timezone));//obviously, you would use your timezone, not necessarily mine
+  $formatedDateTime =  $date->format("Y-m-d H:i:s"); 
+  //echo $formatedDateTime . "<BR>";
   $password = gvfa("password", $_POST);
   $password2 = gvfa("password2", $_POST);
   $email = gvfa("email", $_POST);
@@ -316,9 +338,14 @@ function createUser(){
   if(is_null($errors)) {
   	$encryptedPassword =  crypt($password, $encryptionPassword);
   	$sql = "INSERT INTO user(email, password, created) VALUES ('" . $email . "','" .  mysqli_real_escape_string($conn, $encryptedPassword) . "','" .$formatedDateTime . "')"; 
-	//echo $sql;
-	$result = mysqli_query($conn, $sql);
+    //echo $sql;
+    $result = mysqli_query($conn, $sql);
     $id = mysqli_insert_id($conn);
+    $error = mysqli_error($conn);
+    if($error) {
+      echo  $error;
+      return [$error];
+    }
 	//die("*" . $id);
   	loginUser($_POST);
 	header("Location: ?");
@@ -330,9 +357,14 @@ function createUser(){
  
 }
 
-function saveClip($userId, $clip, $clipboard_item_type_id){
-  Global $conn;
-  
+function saveClip($userId, $clip, $clipboard_item_type_id, $otherUserId=0, $parentClipboardItemId=0){
+  global $conn, $timezone;
+  if(!$otherUserId) {
+    $otherUserId = 0;
+  }
+  if(!$parentClipboardItemId) {
+    $parentClipboardItemId = 0;
+  }
   $tempFile = $_FILES["clipfile"]["tmp_name"];
   $extension = "";
   $filename = "";
@@ -343,7 +375,7 @@ function saveClip($userId, $clip, $clipboard_item_type_id){
   $date = new DateTime("now", new DateTimeZone($timezone));//obviously, you would use your timezone, not necessarily mine
   $formatedDateTime =  $date->format('Y-m-d H:i:s'); 
   
-  $sql = "INSERT INTO clipboard_item(user_id, type_id, clip, file_name, created) VALUES (" . $userId . "," .  intval($clipboard_item_type_id) . ",'" .  mysqli_real_escape_string($conn, $clip) . "','" . mysqli_real_escape_string($conn, $filename) . "','" .$formatedDateTime . "')"; 
+  $sql = "INSERT INTO clipboard_item(user_id, type_id, clip, file_name, other_user_id, parent_clipboard_item_id, created) VALUES (" . $userId . "," .  intval($clipboard_item_type_id) . ",'" .  mysqli_real_escape_string($conn, $clip) . "','" . mysqli_real_escape_string($conn, $filename) . "'," . $otherUserId. "," . $parentClipboardItemId . ",'" .$formatedDateTime . "')"; 
   if($filename != "" || $clip != "") {
     $result = mysqli_query($conn, $sql);
     $id = mysqli_insert_id($conn);
@@ -358,11 +390,12 @@ function clips($typeId) {
   global $conn, $user;
   global $encryptionPassword;
   $userId  = $user["user_id"];
-  $sql = "SELECT * FROM `clipboard_item` WHERE user_id = " . $userId . " ";
+  $sql = "SELECT *, i.created AS clip_created, u.email AS  other_email,  u.user_id As author_id    FROM `clipboard_item` i LEFT JOIN user u ON u.user_id=i.user_id LEFT JOIN user o on o.user_id=i.other_user_id WHERE i.user_id = " . $userId . " OR i.other_user_id = " . $userId;
+ 
   if($typeId) {
-   $sql .= " AND type_id=" . intval($typeId); 
+   $sql .= " AND i.type_id=" . intval($typeId); 
   }
-  $sql .= " ORDER BY created DESC LIMIT 0,100";
+  $sql .= " ORDER BY i.created DESC LIMIT 0,100";
   $out = "";
   $result = mysqli_query($conn, $sql);
   if($result) {
@@ -370,8 +403,16 @@ function clips($typeId) {
 	  
 	  if($rows) {
 		  for($rowCount = 0; $rowCount< count($rows); $rowCount++) {
+        $provideReply = false;
 		    $row = $rows[$rowCount]; 
-		    $out .= "<div class='postRow'>\n<div class='postDate'>" . $row["created"] . "</div>\n";
+		    $out .= "<div class='postRow'>\n<div class='postDate'>" . $row["clip_created"];
+        if($row["other_user_id"] == $userId) {
+          $out .= "<br/>From: " . $row["other_email"];
+          $provideReply = true;
+		    } else if($row["other_user_id"] > 0) {
+          $out .= "<br/>To: " . $row["other_email"];
+		    }
+		    $out .=  "</div>\n";
 		    $clip = $row["clip"];
         $table = "clipboard_item";
         $pk = $table . "_id";
@@ -394,12 +435,16 @@ function clips($typeId) {
 				$endClip = "</tt>";
 			}
 		    $out .= str_replace("\n", "\n<br/>", $clip);
+		    if($provideReply) {
+          $out .= "<br/><button onclick='reply(" . $row["author_id"] . ",". $row["clipboard_item_id"] .")'>reply</button>";
+        }
 		    $out .=  $endClip;
 		    $out .= "</span>";
 
 		  
 			$out .= "<span style='display:none' id='originalclip_" . $row["clipboard_item_id"] . "'>";
 			$out .= $clip;
+
 			$out .= "</span>";
 		    if($row["file_name"] != "") {
 		      $extension = pathinfo($row["file_name"], PATHINFO_EXTENSION);

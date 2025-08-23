@@ -37,6 +37,25 @@ function gotoSelectedClipType(){
 }
 
 
+function reply(otherUserid, clipboardEntryId) {
+  const userDropdown = document.getElementById("other_user_id");
+  const parentClipBoardItemIdInput = document.getElementById("parent_clipboard_item_id");
+  if(parentClipBoardItemIdInput) {
+    parentClipBoardItemIdInput.value = clipboardEntryId;
+  }
+  for (let i = 0; i < userDropdown.options.length; i++) {
+  
+    const option = userDropdown.options[i];
+    console.log(otherUserid, option.value);
+    if (parseInt(option.value) === parseInt(otherUserid)) {
+      option.selected = true;
+      break;
+    }
+  }
+
+
+}
+
 
 function changeClipType(clipboardItemId, hashedEntities, jsId) {
   console.log(jsId);
