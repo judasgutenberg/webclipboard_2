@@ -169,14 +169,14 @@ function clips(lastPkValue) {
       
               let hashedEntities = row.hashed_entities;
               //clipTypeDropdown(data, defaultValue, onChange, jsId)
-              console.log( "THIS!!");
-              out += clipTypeDropdown(
-                clipTypes,
-                row.type_id,
-                `changeClipType(${row.clipboard_item_id},'${hashedEntities}','type_${row.clipboard_item_id}')`,
-                `type_${row.clipboard_item_id}`
-              );
-             
+              if(interface != "app") {
+                out += clipTypeDropdown(
+                  clipTypes,
+                  row.type_id,
+                  `changeClipType(${row.clipboard_item_id},'${hashedEntities}','type_${row.clipboard_item_id}')`,
+                  `type_${row.clipboard_item_id}`
+                );
+                }
 
               if (clip !== "") {
                 out += "<div class='clipTools'>" + clipTools(row.clipboard_item_id) + "</div>\n";
@@ -246,7 +246,7 @@ function clips(lastPkValue) {
           }, 2000);
         }
       };
-      xhr.open("POST", "", true);
+      xhr.open("POST", "index.php", true);
       // Tell the server we?re sending JSON
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.send(JSON.stringify(payload));
@@ -302,7 +302,7 @@ function changeClipType(clipboardItemId, hashedEntities, jsId) {
           }
         }
       };
-      xhr.open("POST", "", true);
+      xhr.open("POST", "index.php", true);
       // Tell the server we?re sending JSON
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.send(JSON.stringify(payload));
