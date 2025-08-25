@@ -209,13 +209,18 @@ function clips(lastPkValue) {
               out += "</span>";
 
               if (row.file_name && row.file_name !== "") {
+                let clickUrl ='index.php?friendly=${encodeURIComponent(row.file_name)}&mode=download&path=${encodeURIComponent("./downloads/" + row.clipboard_item_id + "." + extension)}';
                 let extension = row.file_name.split(".").pop();
                 let lcExtension = extension.toLowerCase();
                 representationOfFile = row.file_name;
                 if (lcExtension == "jpg" || lcExtension == "png" || lcExtension == "gif") {
-                  representationOfFile = "<img width='200' src='downloads/" + row.clipboard_item_id + "." + extension +  "'/>";
+                  let filePath = "downloads/" + row.clipboard_item_id + "." + extension ;
+                  representationOfFile = "<img width='200' src='" + filePath + "'/>";
+                  clickUrl = filePath;
+                  out += "<div class='downloadLink'><a href='javascript:showImageOverlay(\"" + filePath + "\")'>" + representationOfFile  + `</a></div>`
+                } else {
+                  out += "<div class='downloadLink'><a href='" + clickUrl + "'>" + representationOfFile  + `</a></div>`;
                 }
-                out += `<div class='downloadLink'><a href='index.php?friendly=${encodeURIComponent(row.file_name)}&mode=download&path=${encodeURIComponent("./downloads/" + row.clipboard_item_id + "." + extension)}'>` + representationOfFile  + `</a></div>`;
               }
 
               out += "</div>";
@@ -254,6 +259,25 @@ function clips(lastPkValue) {
 
 }
 
+    function showImageOverlay(imagePath) {
+      // Create overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'overlay';
+
+      // Create image
+      const img = document.createElement('img');
+      img.src = imagePath;
+
+      // Create close button
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = 'Back';
+      closeBtn.onclick = () => document.body.removeChild(overlay);
+
+      // Add everything
+      overlay.appendChild(img);
+      overlay.appendChild(closeBtn);
+      document.body.appendChild(overlay);
+    }
 
 function changeClipType(clipboardItemId, hashedEntities, jsId) {
   console.log(jsId);
