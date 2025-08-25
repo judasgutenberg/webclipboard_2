@@ -258,26 +258,30 @@ function clips(lastPkValue) {
 
 
 }
+// Open overlay (example)
+function showImageOverlay(imgSrc) {
+  const overlay = document.createElement("div");
+  overlay.className = "overlay";
 
-    function showImageOverlay(imagePath) {
-      // Create overlay
-      const overlay = document.createElement('div');
-      overlay.className = 'overlay';
+  const img = document.createElement("img");
+  img.src = imgSrc;
 
-      // Create image
-      const img = document.createElement('img');
-      img.src = imagePath;
+  const btn = document.createElement("button");
+  btn.innerText = "?"; // nice unicode X
+  btn.onclick = () => overlay.remove();
 
-      // Create close button
-      const closeBtn = document.createElement('button');
-      closeBtn.textContent = 'Back';
-      closeBtn.onclick = () => document.body.removeChild(overlay);
-
-      // Add everything
-      overlay.appendChild(img);
-      overlay.appendChild(closeBtn);
-      document.body.appendChild(overlay);
+  // close if backdrop clicked (but not the image)
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay || e.target === overlay.querySelector("::before")) {
+      overlay.remove();
     }
+  });
+
+  overlay.appendChild(img);
+  overlay.appendChild(btn);
+  document.body.appendChild(overlay);
+}
+
 
 function changeClipType(clipboardItemId, hashedEntities, jsId) {
   console.log(jsId);

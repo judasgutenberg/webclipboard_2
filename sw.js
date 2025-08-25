@@ -1,15 +1,16 @@
-// sw.js — minimal service worker to make Chrome happy
-self.addEventListener("install", event => {
-  // Skip waiting so it activates right away
+// sw.js — minimal do-nothing service worker
+
+self.addEventListener('install', event => {
+  // activate immediately
   self.skipWaiting();
 });
 
-self.addEventListener("activate", event => {
-  // Claim clients so the SW takes control immediately
-  event.waitUntil(clients.claim());
+self.addEventListener('activate', event => {
+  // take control of pages immediately
+  self.clients.claim();
 });
 
-self.addEventListener("fetch", event => {
-  // Pass requests straight through to the network
-  event.respondWith(fetch(event.request));
+// fetch event that does nothing — just goes to network
+self.addEventListener('fetch', event => {
+  // don’t intercept anything, just let network handle it
 });

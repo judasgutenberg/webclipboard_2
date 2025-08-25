@@ -371,14 +371,21 @@ function bodyWrap($content, $interface="") {
   
   if($interface == "app") {
     $out .= '<meta name="viewport" content="width=device-width, initial-scale=1.0">' . "\n";
-    $out .= '<link rel="manifest" href="index.php?action=manifest&bgcolor=%23ffffff&icon=clipboard.png&themecolor=%2366cc66&name=Collab+Clipboard&shortname=ColabClip&url=' . $_SERVER['REQUEST_URI'] . '">' . "\n";
-    $out .= '<meta name="mobile-web-app-capable" content="yes">' . "\n";
+    $out .= '<link rel="manifest" href="index.php?action=manifest&bgcolor=%23ffffff&icon=clipboard.png&themecolor=%2366cc66&name=Collab+Clipboard&shortname=ColabClip&url=https://randomsprocket.com/cb/app.php">' . "\n";$out .= '<meta name="mobile-web-app-capable" content="yes">' . "\n";
     $out .= '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
     $out .= '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' . "\n";
     $out .= '<link rel="icon" type="image/x-icon" href="./favicon.ico" />' . "\n";
+    $out .= '
+    <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/cb/sw.js")
+        .then(() => console.log("Service worker registered"))
+        .catch(err => console.error("Service worker registration failed:", err));
+    }
+    </script>';
   }
   $out .= "\n<script>let interface = '" . $interface . "';</script>" . "\n";
-  $out .= "<script src='site.js'></script>\n";
+  $out .= "<script src='site.js?dsdfs'></script>\n";
   $out .= "<link rel='stylesheet' href='" . $interface  . "site.css'>\n";
   $out .= "<title>Web Clipboard</title>\n";
   $out .= "</head>\n";

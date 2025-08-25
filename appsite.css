@@ -138,7 +138,24 @@ ul {
   padding: 0;
   margin: 0;
 }
-/* Overlay (image viewer) */
+
+ 
+ /* Overlay container */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+/* Overlay container */
 .overlay {
   position: fixed;
   top: 0;
@@ -154,25 +171,37 @@ ul {
   box-sizing: border-box;
 }
 
+/* "Backdrop" click area */
+.overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* Image styling */
 .overlay img {
+  position: relative;
   max-width: 100%;
   max-height: 100%;
   border-radius: 8px;
   box-shadow: 0 0 25px rgba(0,0,0,0.9);
-  object-fit: contain; /* prevents distortion */
+  object-fit: contain;
+  z-index: 1; /* keeps it above the backdrop */
 }
 
+/* Close button */
 .overlay button {
   position: fixed;
   top: 1rem;
   right: 1rem;
   padding: 0.75rem 1rem;
-  font-size: 1.125rem; /* bigger for touch */
+  font-size: 1.125rem;
   border: none;
   border-radius: 6px;
   background: rgba(255,255,255,0.9);
   cursor: pointer;
   color: #333;
+  z-index: 2; /* always above everything */
   transition: background 0.2s;
 }
 
