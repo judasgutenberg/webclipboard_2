@@ -275,7 +275,9 @@ function saveClip($userId, $clip, $clipboard_item_type_id, $otherUserId=0, $pare
   $date = new DateTime("now", new DateTimeZone($timezone));//obviously, you would use your timezone, not necessarily mine
   $formatedDateTime =  $date->format('Y-m-d H:i:s'); 
   
-  $sql = "INSERT INTO clipboard_item(user_id, type_id, clip, file_name, other_user_id, parent_clipboard_item_id, created) VALUES (" . $userId . "," .  intval($clipboard_item_type_id) . ",'" .  mysqli_real_escape_string($conn, $clip) . "','" . mysqli_real_escape_string($conn, $filename) . "'," . $otherUserId. "," . $parentClipboardItemId . ",'" .$formatedDateTime . "')"; 
+  $sql = "INSERT INTO clipboard_item(user_id, type_id, clip, file_name, other_user_id, parent_clipboard_item_id, created) SELECT  " . $userId . "," .  intval($clipboard_item_type_id) . ",'" .  mysqli_real_escape_string($conn, $clip) . "','" . mysqli_real_escape_string($conn, $filename) . "'," . $otherUserId. "," . $parentClipboardItemId . ",'" .$formatedDateTime . "' ";
+  $sql .= " FROM DUAL WHERE NOT EXISTS(SELECT * FROM clipboard_item WHERE user_id=" . $userId . " AND file_name='" . mysqli_real_escape_string($conn, $filename)  . "' AND clip ='" . mysqli_real_escape_string($conn, $clip) . "' )";
+  //die($sql);
   if($filename != "" || $clip != "") {
     $result = mysqli_query($conn, $sql);
     $id = mysqli_insert_id($conn);

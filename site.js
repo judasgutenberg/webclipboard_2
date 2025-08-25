@@ -209,8 +209,8 @@ function clips(lastPkValue) {
               out += "</span>";
 
               if (row.file_name && row.file_name !== "") {
-                let clickUrl ='index.php?friendly=${encodeURIComponent(row.file_name)}&mode=download&path=${encodeURIComponent("./downloads/" + row.clipboard_item_id + "." + extension)}';
                 let extension = row.file_name.split(".").pop();
+                let clickUrl = "index.php?friendly=" + encodeURIComponent(row.file_name) + "&mode=download&path=" + encodeURIComponent("./downloads/" + row.clipboard_item_id + "." + extension);
                 let lcExtension = extension.toLowerCase();
                 representationOfFile = row.file_name;
                 if (lcExtension == "jpg" || lcExtension == "png" || lcExtension == "gif") {
@@ -267,7 +267,7 @@ function showImageOverlay(imgSrc) {
   img.src = imgSrc;
 
   const btn = document.createElement("button");
-  btn.innerText = "?"; // nice unicode X
+  btn.innerText = "X"; // nice unicode X
   btn.onclick = () => overlay.remove();
 
   // close if backdrop clicked (but not the image)
