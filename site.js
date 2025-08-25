@@ -63,28 +63,29 @@ function clipTypeDropdown(data, defaultValue, onChange, jsId) {
 
 function genericSelect(id, name, defaultValue, data, event = "", onChange = "") {
   let out = "";
-
-  out += `<select name="${name}" id="${id}" ${event}="${onChange}">\n`;
-  out += "<option/>"; // empty option at the top
-
   if (data && data.length) {
-    for (let datum of data) {
-      // handle associative array/object with "value" and "text"
-      let value = (datum && datum.value !== undefined) ? datum.value : "";
-      let text = (datum && datum.text !== undefined) ? datum.text : "";
+    out += `<select name="${name}" id="${id}" ${event}="${onChange}">\n`;
+    out += "<option/>"; // empty option at the top
 
-      // if it's just a list of scalars or empty object
-      if ((value === "" && text === "") || (!text && typeof datum !== "object")) {
-        value = datum;
-        text = datum;
+    
+      for (let datum of data) {
+        // handle associative array/object with "value" and "text"
+        let value = (datum && datum.value !== undefined) ? datum.value : "";
+        let text = (datum && datum.text !== undefined) ? datum.text : "";
+
+        // if it's just a list of scalars or empty object
+        if ((value === "" && text === "") || (!text && typeof datum !== "object")) {
+          value = datum;
+          text = datum;
+        }
+
+        let selected = (defaultValue == value) ? " selected='true'" : "";
+        out += `<option${selected} value="${value}">${text}</option>`;
       }
+    
 
-      let selected = (defaultValue == value) ? " selected='true'" : "";
-      out += `<option${selected} value="${value}">${text}</option>`;
-    }
+    out += "</select>";
   }
-
-  out += "</select>";
   return out;
 }
 
