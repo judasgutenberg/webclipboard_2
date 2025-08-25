@@ -386,7 +386,7 @@ function bodyWrap($content, $interface="") {
   }
   $out .= "\n<script>let interface = '" . $interface . "';</script>" . "\n";
 
-  $out .= "<script src='site.js'></script>\n";
+  $out .= "<script src='site.js?dfsdf'></script>\n";
   $out .= "<link rel='stylesheet' href='" . $interface  . "site.css'>\n";
   $out .= "<title>Web Clipboard</title>\n";
   $out .= "</head>\n";
