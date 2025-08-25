@@ -154,7 +154,7 @@ function clips(lastPkValue) {
               out += "<div class='postRow'>\n<div class='postDate'>" + row.clip_created;
 
               if (row.other_user_id === userId) {
-                out += "<br/>From: " + row.other_email;
+                out += "<br/>From: " + row.author_email;
                 provideReply = true;
               } else if (row.other_user_id > 0) {
                 out += "<br/>To: " + row.other_email;
