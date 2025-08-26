@@ -4,6 +4,8 @@ This is a clipboard system to use primarily for transferring small amounts of te
 
 This version also supports simple two-way communication between two users in the system. You pick the target in the dropdown, and if you do, the clip appears in their clips as well.   I've installed a copy of this as a progressive app on the phone of my special-needs brother so I can easily send him photos to look at, as he doesn't seem to have the attention span necessary to absorb how to receive an email.
 
+There are two front-ends, index.php for conventional web browsers, and app.php, which is designed to be installed as a progressive web-app on a smartphone. Once you've logged-in, the smartphone app is very handy for taking notes such as grocery lists or two-person text/image communications.
+
 The clipboard also supports file uploads in addition to simple text and preserves the filename of the uploaded file.
 
 Passwords are encrypted and new accounts are easily created (there is no email verification or easy UI to change your password!).
