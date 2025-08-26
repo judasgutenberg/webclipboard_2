@@ -51,6 +51,10 @@ if($user) {
 	$out .= "<div id='clips'>\n";
 	//$out .= clips($typeId);
 	$out .= "</div>\n";
+	if (strtolower($mode) == "save clip" && $user != false) {
+		saveClip($user["user_id"], gvfw("clip", ""), gvfw("clipboard_item_type_id", ""), $otherUserId, $parentClipboardItemId);
+	}
+ 
 } else if ($mode == "startnewuser" || !is_null($createUserErrors)) {
 	$out .= "<div class='loggedin'>You are logged out. <div class='basicbutton'><a href=\"?mode=login\">log in</a></div></div>\n"; 
 	$out .= newUserForm($createUserErrors);
@@ -67,7 +71,7 @@ echo bodyWrap($out, "app");
 function appClipForm($typeId, $otherUserId) {
   $out = "";
   $out .= "<div>\n";
-  $out .= "<form method='post' name='clipForm' id='clipForm'  enctype='multipart/form-data'>\n";
+  $out .= "<form method='post' name='clipForm' id='clipForm' enctype='multipart/form-data'>\n";
   $out .= "<div class='clipFormButtons'>\n";
   $out .= "<textarea name='clip' id='clip' style='width:500px; height:50px'>\n";
   $out .= "</textarea>\n";
@@ -80,7 +84,7 @@ function appClipForm($typeId, $otherUserId) {
   //if($typeDropdown) {
     //$out .= "Type: " . $typeDropdown;
   //}
-  $out .= " Send to: " . userDropdown($otherUserId, "");
+  $out .= " <br/>Send to: " . userDropdown($otherUserId, "");
   $out .= "<input name='mode' value='Save Clip' type='submit'/>\n";
   $out .= "<input name='parent_clipboard_item_id' id='parent_clipboard_item_id' value='' type='hidden'/>\n";
 
