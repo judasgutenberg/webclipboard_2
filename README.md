@@ -29,7 +29,8 @@ $database = "your_database";
 $password = "your_password";
 $encryptionPassword = "your_cookie_encryption_password";
 $cookiename = "your_cookie_name";
-
+$timezone = "America/New_York";
+ 
 ?&gt;
 </code>
 To see this in action (and create your own clipboard hosted on my server until I stop paying the bills), go here:
