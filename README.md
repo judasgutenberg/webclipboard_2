@@ -6,7 +6,7 @@ This version also supports simple two-way communication between two users in the
 
 There are two front-ends, index.php for conventional web browsers, and app.php, which is designed to be installed as a progressive web-app on a smartphone. Once you've logged-in, the smartphone app is very handy for taking notes such as grocery lists or two-person text/image communications.
 
-The clipboard also supports file uploads in addition to simple text and preserves the filename of the uploaded file.
+The clipboard also supports file uploads in addition to simple text and preserves the filename of the uploaded file. Uploaded images are rendered so you can see them in the clip.
 
 Passwords are encrypted and new accounts are easily created (there is no email verification or easy UI to change your password!).
 
