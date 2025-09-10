@@ -224,7 +224,7 @@ function clips(lastPkValue, specificPkValue, clear) {
               let provideReply = false;
             
               if(!specificPkValue) {
-                out += "<div id='clipcontainer" + row.clipboard_item_id + "'\n";
+                out += "<div id='clipcontainer" + row.clipboard_item_id + "'>\n";
               }
               out += "<div class='postRow'>\n<div class='postDate'>" + row.clip_created;
 
