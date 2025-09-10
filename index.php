@@ -73,6 +73,7 @@ if(gvfw("mode")) {
     $pk = gvfw("pk");
     $lastPkValue = gvfw($pk);
     $value =  gvfw("value");
+    $specificItemId =  gvfw("specific_item_id");
     $limit =  100;
     $hashedEntities = gvfw("hashed_entities");
     	
@@ -82,7 +83,11 @@ if(gvfw("mode")) {
  
         $userId  = $user["user_id"];
         $sql = "SELECT *, i.created AS clip_created, o.email AS  other_email, u.email AS  author_email,   u.user_id As author_id ," .  $user["user_id"]  ." AS our_user_id   FROM `clipboard_item` i LEFT JOIN user u ON u.user_id=i.user_id LEFT JOIN user o on o.user_id=i.other_user_id WHERE (i.user_id = " . $user["user_id"]. " OR i.other_user_id = " . $user["user_id"] . ")";
-        $sql .=  " AND clipboard_item_id> " . intval($lastPkValue);
+        if($specificItemId) {
+          $sql .=  " AND clipboard_item_id = " . intval($specificItemId);
+        } else {
+          $sql .=  " AND clipboard_item_id> " . intval($lastPkValue);
+        }
         if($value) {
          $sql .= " AND i.type_id=" . intval($value); 
         }

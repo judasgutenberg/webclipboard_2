@@ -162,7 +162,7 @@ function saveClip() {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       closeClipEditor();
-      clips(0, clipId, true);
+      clips(0, clipId, false);
       //window.location.reload(); // or update UI dynamically
     }
   };
@@ -223,8 +223,9 @@ function clips(lastPkValue, specificPkValue, clear) {
               // assumes you already have rows, rowCount, userId, encryptionPassword
               let provideReply = false;
             
-              
-              out += "<div id='clipcontainer" + row.clipboard_item_id + "'\n";
+              if(!specificPkValue) {
+                out += "<div id='clipcontainer" + row.clipboard_item_id + "'\n";
+              }
               out += "<div class='postRow'>\n<div class='postDate'>" + row.clip_created;
 
               if (row.other_user_id === userId) {
@@ -299,8 +300,9 @@ function clips(lastPkValue, specificPkValue, clear) {
 
               out += "</div>";
               out += "</div>\n";
-              out += "</div>\n";
-              
+              if(!specificPkValue) {
+                out += "</div>\n";
+              }
               
               
               
@@ -310,8 +312,15 @@ function clips(lastPkValue, specificPkValue, clear) {
             if(clearThread) {
               clipsPlace.innerHTML = "";
             }
+
             if(out) {
-              clipsPlace.innerHTML = out + clipsPlace.innerHTML;
+              if(specificPkValue) {
+                //just replace the one clip
+                let specificDiv = document.getElementById("clipcontainer" + specificPkValue);
+                specificDiv.innerHTML = out;
+              } else {
+                clipsPlace.innerHTML = out + clipsPlace.innerHTML;
+              }
             }
             out ="";
       
@@ -325,6 +334,9 @@ function clips(lastPkValue, specificPkValue, clear) {
           }, 2000);
         }
       };
+      if(specificPkValue) {
+        console.log(payload);
+      }
       xhr.open("POST", "index.php", true);
       // Tell the server we?re sending JSON
       xhr.setRequestHeader("Content-Type", "application/json");
