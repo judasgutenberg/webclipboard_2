@@ -162,7 +162,7 @@ function saveClip() {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       closeClipEditor();
-      clips(0, clipId);
+      clips(0, clipId, true);
       //window.location.reload(); // or update UI dynamically
     }
   };
@@ -171,14 +171,14 @@ function saveClip() {
   xhr.send(JSON.stringify(payload));
 }
 
-function clips(lastPkValue, specificPkValue) {
+function clips(lastPkValue, specificPkValue, clear) {
     let select = document.getElementById("clipboard_item_type_id");
     clearThread = false;
     typeId = '';
     if(select) {
       typeId = select[select.selectedIndex].value;
     }
-    if(typeId != oldType) {
+    if(typeId != oldType || clear) {
       lastPkValue = 0;
       oldType = typeId;
       clearThread = true;
