@@ -392,6 +392,29 @@ function bodyWrap($content, $interface="") {
   $out .= "<title>Web Clipboard</title>\n";
   $out .= "</head>\n";
   $out .= "<body>\n";
+  $out .= '
+    <div id="overlay" style="
+    display: none;
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(0,0,0,0.6); 
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    ">';
+    $out .= '
+    <div style="background: #fff; padding: 20px; border-radius: 10px; width: 400px;">
+    <h3>Edit Clip</h3>
+    <form id="editForm">
+      <input type="hidden" id="clipboard_item_id" name="clipboard_item_id">
+      <label for="clipContent">Content</label><br>
+      <textarea id="clipContent" name="clipContent" rows="5" style="width:100%;"></textarea><br><br>
+      
+      <button type="button" onclick="saveClip()">Save</button>
+      <button type="button" onclick="closeClipEditor()">Cancel</button>
+      </form>
+    </div>
+  </div>';
   $out .= $content;
   $out .= "</body>\n";
   $out .= "</html>\n";
@@ -472,4 +495,13 @@ function download($path, $friendlyName){
     header('Content-Length: '. strlen($file));
     echo $file;
     exit;
+}
+
+function filterStringForSqlEntities($input, $strict = false) {
+  // Replace characters that are not letters, numbers, dashes, underscores, commas, or parentheses with an empty string
+  $filtered = preg_replace('/[^a-zA-Z0-9\_]/', '', $input);
+  if(!$strict){
+    $filtered = preg_replace('/[^a-zA-Z0-9\-_(),]/', '', $input);
+  }
+  return $filtered;
 }

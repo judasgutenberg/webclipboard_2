@@ -9,6 +9,10 @@ error_reporting(E_ALL);
 
 include("config.php");
 include("cb_functions.php");
+
+$date = new DateTime("now", new DateTimeZone($timezone));//set the $timezone global in config.php
+$formattedDateTime =  $date->format('Y-m-d H:i:s');
+
 normalizePostData();
 
 $conn = mysqli_connect($servername, $username, $password, $database);
@@ -112,7 +116,7 @@ if(gvfw("mode")) {
     
     //}
 	} else if ($mode == "crud"  && $user) {
- 
+    $out = array();
     $table = gvfw("table");
     $pk = gvfw("pk");
     $pkValue = gvfw($pk);
@@ -132,6 +136,32 @@ if(gvfw("mode")) {
       die($value );
       //$row = $result->fetch_assoc();
     
+    }
+ 
+    if($action == "get") {
+      if($table == "clipboard_item") {
+        //yikes! need to make this haxor-proof
+        $sql = "SELECT * FROM " . filterStringForSqlEntities($table) . " WHERE " . filterStringForSqlEntities($pk) . "='" . intval($pkValue) . "'";
+        //echo $sql;
+        $result = mysqli_query($conn, $sql);
+        if($result) {
+          $rows =  mysqli_fetch_all($result, MYSQLI_ASSOC);
+          $out["sql"]= $sql;
+          $out["clip"]= $rows[0];
+          die(json_encode($out));
+        }
+      
+      }
+    }
+    if($action == "update") {
+      if($table == "clipboard_item") {
+        //yikes! need to make this haxor-proof. well at least only the user or other user can change
+        $sql = "UPDATE  " . filterStringForSqlEntities($table) . " SET modified_user_id=" . $user["user_id"] . ", altered='" . $formattedDateTime . "', " . filterStringForSqlEntities($column)  . "='" . mysqli_real_escape_string($conn, $value) . "' WHERE " . filterStringForSqlEntities($pk) . "='" . intval($pkValue) . "'";
+        $sql .= " AND user_id=" . $user["user_id"] . " OR other_user_id=" . $user["user_id"];
+        $result = mysqli_query($conn, $sql);
+        $out["sql"]= $sql;
+        die(json_encode($out));
+      }
     }
     
     

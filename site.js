@@ -92,15 +92,86 @@ function genericSelect(id, name, defaultValue, data, event = "", onChange = "") 
 
 function clipTools(clipId) {
   let out = "";
+  out += `<a href="javascript:edit(${clipId})">
+    &#128221; 
+    </a>\n`;
   out += `<a href="javascript:copy(${clipId})">
-            <img src="copy.png" height="10" border="0"/>
-          </a>\n`;
+    <img src="copy.png" height="10" border="0"/>
+    </a>\n`;
+
   return out;
 }
 
+function edit(clipId) {
+  //return;
+ 
+ 
+ 
+      
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // If your PHP returns JSON:
+            // const data = JSON.parse(xhr.responseText);
+            //console.log("Server replied:", xhr.responseText);
+            //window.location.reload();
+            //no action necessary
+            let outValue = xhr.responseText;
+            console.log(outValue);
+            const data = JSON.parse(outValue);
+            
+            const clip = data.clip;
+            
+            document.getElementById("clipboard_item_id").value = clip.clipboard_item_id;
+            document.getElementById("clipContent").value = clip.clip;
+
+            // Show overlay
+            document.getElementById("overlay").style.display = "flex";
+
+          } else {
+            console.error("Request failed:", xhr.status, xhr.statusText);
+          }
+        }
+      };
+      xhr.open("GET", "index.php?mode=crud&action=get&clipboard_item_id=" + clipId + "&table=clipboard_item&pk=clipboard_item_id", true);
+      // Tell the server we?re sending JSON
+      xhr.send();
+}
+
+function closeClipEditor() {
+  document.getElementById("overlay").style.display = "none";
+}
 
 
-function clips(lastPkValue) {
+function saveClip() {
+  const clipId = document.getElementById("clipboard_item_id").value;
+  const value = document.getElementById("clipContent").value;
+
+  const payload = {
+    mode: "crud",
+    action: "update",
+    table: "clipboard_item",
+    pk: "clipboard_item_id",
+    clipboard_item_id: clipId,
+    column: "clip",
+    value: value
+  };
+
+  const xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      closeClipEditor();
+      clips(0, clipId);
+      //window.location.reload(); // or update UI dynamically
+    }
+  };
+  xhr.open("POST", "index.php", true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send(JSON.stringify(payload));
+}
+
+function clips(lastPkValue, specificPkValue) {
     let select = document.getElementById("clipboard_item_type_id");
     clearThread = false;
     typeId = '';
@@ -112,6 +183,7 @@ function clips(lastPkValue) {
       oldType = typeId;
       clearThread = true;
     }
+
       const payload = {
         action: "expandinglist",
         mode: "json",
@@ -120,6 +192,7 @@ function clips(lastPkValue) {
         table: "clipboard_item",
         pk: "clipboard_item_id",
         clipboard_item_id: lastPkValue,
+        specific_item_id: specificPkValue,
         limit: 100,
         //pre_entity: table + "+" + pkName + "+" + pkValue,
         hashed_entities: "lol"
@@ -151,7 +224,7 @@ function clips(lastPkValue) {
               let provideReply = false;
             
               
-
+              out += "<div id='clipcontainer" + row.clipboard_item_id + "'\n";
               out += "<div class='postRow'>\n<div class='postDate'>" + row.clip_created;
 
               if (row.other_user_id === userId) {
@@ -226,7 +299,7 @@ function clips(lastPkValue) {
 
               out += "</div>";
               out += "</div>\n";
-              
+              out += "</div>\n";
               
               
               
