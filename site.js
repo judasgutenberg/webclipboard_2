@@ -194,7 +194,7 @@ function clips(lastPkValue, specificPkValue, clear) {
         column: "type_id",
         table: "clipboard_item",
         pk: "clipboard_item_id",
-        uptodate_date: uptoDateDate;
+        uptodate_date: uptoDateDate,
         clipboard_item_id: lastPkValue,
         specific_item_id: specificPkValue,
         limit: 100,
