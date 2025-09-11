@@ -1,3 +1,6 @@
+let otherModified = [];
+let uptoDateDate = "";
+
 function copy(id){
   let href = document.getElementById("href" + id.toString());
   let contentDiv = document.getElementById("originalclip_" + id.toString());
@@ -191,6 +194,7 @@ function clips(lastPkValue, specificPkValue, clear) {
         column: "type_id",
         table: "clipboard_item",
         pk: "clipboard_item_id",
+        uptodate_date: uptoDateDate;
         clipboard_item_id: lastPkValue,
         specific_item_id: specificPkValue,
         limit: 100,
@@ -207,9 +211,17 @@ function clips(lastPkValue, specificPkValue, clear) {
             const data =  JSON.parse(raw);
             const clipboardItems =  data.clips;
             const clipTypes = data.clipTypes;
+            if(data["other_modified"]) {
+              for(let item of data["other_modified"]){
+                otherModified.push(item);
+              }
+            }
             let out = "";
             for(let row of clipboardItems){
               console.log(row);
+              if(uptoDateDate < row["altered"]) {
+                uptoDateDate = row["altered"];
+              }
               let clipboardItemId = row["clipboard_item_id"];
               if(globalLastClipboardItemId < clipboardItemId) {
                 globalLastClipboardItemId = clipboardItemId;

@@ -75,6 +75,7 @@ if(gvfw("mode")) {
     $value =  gvfw("value");
     $specificItemId =  gvfw("specific_item_id");
     $limit =  100;
+    $uptoDateDate = gvfw("uptodate_date");
     $hashedEntities = gvfw("hashed_entities");
     	
     //$calculatedHasedEntities = hash_hmac('sha256',$table .$pk, $encryptionPassword);
@@ -107,6 +108,21 @@ if(gvfw("mode")) {
           $row["password"] = "";
         }
         $out["clips"]= $rows;
+        
+        //also populate other_modified
+        $sql = "SELECT clipboard_item_id FROM clipboard_item WHERE other_user_id = " . intval($user["user_id"]) . " AND altered > '" . $uptoDateDate . "'";
+        $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $otherModifiedIds = [];
+         if($result) {
+            $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            foreach($rows as &$row) {
+              $otherModifiedIds[] = $row["clipboard_item_id"];
+            }
+         }
+         $out["other_modified"]= $otherModifiedIds;
+        
+        
+        
         //probably not very DRY:
         $sql = "SELECT name as text, clipboard_item_type_id as value  FROM clipboard_item_type  WHERE user_id = " . intval($user["user_id"]) . " ORDER BY name asc";
         $result = mysqli_query($conn, $sql);
