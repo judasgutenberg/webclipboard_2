@@ -241,10 +241,21 @@ function clips(lastPkValue, specificPkValue, clear) {
               out += "<div class='postRow'>\n<div class='postDate'>" + row.clip_created;
 
               if (row.other_user_id === userId) {
-                out += "<br/>From: " + row.author_email;
+                out += "<br/>From: " 
+                if(row.author_full_name) {
+                  out += row.author_full_name;
+                } else {
+                  out += row.author_email;
+                }
+     
                 provideReply = true;
               } else if (row.other_user_id > 0) {
-                out += "<br/>To: " + row.other_email;
+                out += "<br/>To: "
+                if(row.other_full_name) {
+                  out += row.other_full_name;
+                } else {
+                  out += row.other_email;
+                }
               }
 
               out += "</div>\n";

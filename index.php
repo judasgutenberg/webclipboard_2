@@ -20,6 +20,7 @@ $conn = mysqli_connect($servername, $username, $password, $database);
 $mode = "";
  
 $user = logIn();
+ 
 $out = "";
 $createUserErrors = NULL;
 //$formatedDateTime =  $date->format('H:i');
@@ -68,7 +69,7 @@ if(gvfw("mode")) {
 		die();
 		
 	} else if ($mode == "json"  && $user) {
-
+ 
     $table = gvfw("table");
     $pk = gvfw("pk");
     $lastPkValue = gvfw($pk);
@@ -83,7 +84,7 @@ if(gvfw("mode")) {
       if($table == "clipboard_item") {
  
         $userId  = $user["user_id"];
-        $sql = "SELECT *, i.created AS clip_created, o.email AS  other_email, u.email AS  author_email,   u.user_id As author_id ," .  $user["user_id"]  ." AS our_user_id   FROM `clipboard_item` i LEFT JOIN user u ON u.user_id=i.user_id LEFT JOIN user o on o.user_id=i.other_user_id WHERE (i.user_id = " . $user["user_id"]. " OR i.other_user_id = " . $user["user_id"] . ")";
+        $sql = "SELECT *, i.created AS clip_created,  o.full_name AS  other_full_name, o.email AS  other_email, u.email AS  author_email,  u.full_name AS  author_full_name, u.user_id As author_id ," .  $user["user_id"]  ." AS our_user_id   FROM `clipboard_item` i LEFT JOIN user u ON u.user_id=i.user_id LEFT JOIN user o on o.user_id=i.other_user_id WHERE (i.user_id = " . $user["user_id"]. " OR i.other_user_id = " . $user["user_id"] . ")";
         if($specificItemId) {
           $sql .=  " AND clipboard_item_id = " . intval($specificItemId);
         } else {
@@ -192,7 +193,7 @@ if(gvfw("mode")) {
  
 
 
-
+ 
 if($user) {
 	$out .= "<div class='loggedin'>You are logged in as <b>" . userDisplayText($user) . "</b> <div class='basicbutton'><a href=\"?mode=logout\">logout</a></div></div>\n"; 
 	$out .= "<div>\n";
