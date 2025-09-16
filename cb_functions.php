@@ -373,7 +373,8 @@ function bodyWrap($content, $interface="") {
   
   if($interface == "app") {
     $out .= '<meta name="viewport" content="width=device-width, initial-scale=1.0">' . "\n";
-    $out .= '<link rel="manifest" href="index.php?action=manifest&bgcolor=%23ffffff&icon=clipboard.png&themecolor=%2366cc66&name=Collab+Clipboard&shortname=ColabClip&url=https://randomsprocket.com/cb/app.php">' . "\n";$out .= '<meta name="mobile-web-app-capable" content="yes">' . "\n";
+    $out .= '<link rel="manifest" href="index.php?action=manifest&bgcolor=%23ffffff&icon=clipboard.png&themecolor=%2366cc66&name=Collab+Clipboard&shortname=ColabClip&url=https://randomsprocket.com/cb/app.php">' . "\n";
+    $out .= '<meta name="mobile-web-app-capable" content="yes">' . "\n";
     $out .= '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
     $out .= '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' . "\n";
     $out .= '<link rel="icon" type="image/x-icon" href="./favicon.ico" />' . "\n";
@@ -504,4 +505,11 @@ function filterStringForSqlEntities($input, $strict = false) {
     $filtered = preg_replace('/[^a-zA-Z0-9\-_(),]/', '', $input);
   }
   return $filtered;
+}
+
+function userDisplayText($user) {
+  if($user["full_name"]) {
+    return $user["full_name"];
+  }
+  return $user["email"];
 }

@@ -194,7 +194,7 @@ if(gvfw("mode")) {
 
 
 if($user) {
-	$out .= "<div class='loggedin'>You are logged in as <b>" . $user["email"] . "</b> <div class='basicbutton'><a href=\"?mode=logout\">logout</a></div></div>\n"; 
+	$out .= "<div class='loggedin'>You are logged in as <b>" . userDisplayText($user) . "</b> <div class='basicbutton'><a href=\"?mode=logout\">logout</a></div></div>\n"; 
 	$out .= "<div>\n";
 	$out .= clipForm($typeId, "");
 	$out .= "</div>\n";
