@@ -19,6 +19,8 @@ CREATE TABLE `clipboard_item_type` (
 
 CREATE TABLE user(
   user_id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(200) NULL,
+  sort_name VARCHAR(200) NULL,
   email VARCHAR(100) NULL,
   password VARCHAR(100) NULL,
   role VARCHAR(50) DEFAULT 'normal',
