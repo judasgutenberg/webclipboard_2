@@ -51,25 +51,32 @@ function normalizePostData() {
 
 function newUserForm($error = NULL) {
 	$formData = array(
+	
+    [
+      'label' => 'full name',
+      'name' => 'full_name',
+      'value' => gvfa("full_name", $_POST), 
+      'error' => gvfa('full_name', $error)
+    ],
 		[
-	    'label' => 'email',
-		'name' => 'email',
-	    'value' => gvfa("email", $_POST), 
-		'error' => gvfa('email', $error)
+      'label' => 'email',
+      'name' => 'email',
+      'value' => gvfa("email", $_POST), 
+      'error' => gvfa('email', $error)
 	  ],
 		[
-	    'title' => 'password',
-		'name' => 'password',
-		'type' => 'password',
-	    'value' => gvfa("password", $_POST), 
-		'error' => gvfa('error', $error)
+      'title' => 'password',
+      'name' => 'password',
+      'type' => 'password',
+      'value' => gvfa("password", $_POST), 
+      'error' => gvfa('error', $error)
 	   ],
 		[
-	    'label' => 'password (again)',
-		'name' => 'password2',
-		'type' => 'password',
-	    'value' => gvfa("password2", $_POST),
-		'error' => gvfa('password2', $error)
+      'label' => 'password (again)',
+      'name' => 'password2',
+      'type' => 'password',
+      'value' => gvfa("password2", $_POST),
+      'error' => gvfa('password2', $error)
 	   ]
 	);
   return genericForm($formData, "create user");
@@ -229,6 +236,7 @@ function createUser(){
   $password = gvfa("password", $_POST);
   $password2 = gvfa("password2", $_POST);
   $email = gvfa("email", $_POST);
+  $fullName = gvfa("full_name", $_POST);
   if($password != $password2 || $password == "") {
   	$errors["password2"] = "Passwords must be identical and have a value";
   }
@@ -237,7 +245,10 @@ function createUser(){
   }
   if(is_null($errors)) {
   	$encryptedPassword =  crypt($password, $encryptionPassword);
-  	$sql = "INSERT INTO user(email, password, created) VALUES ('" . $email . "','" .  mysqli_real_escape_string($conn, $encryptedPassword) . "','" .$formatedDateTime . "')"; 
+  	if(!$fullName) {
+      $fullName = $email;
+    }
+  	$sql = "INSERT INTO user(email, password, full_name, created) VALUES ('" . $email . "','" .  mysqli_real_escape_string($conn, $encryptedPassword) . "','" .mysqli_real_escape_string($conn, $fullName)  . "','" .$formatedDateTime . "')"; 
     //echo $sql;
     $result = mysqli_query($conn, $sql);
     $id = mysqli_insert_id($conn);
