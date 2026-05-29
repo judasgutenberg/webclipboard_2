@@ -1,13 +1,18 @@
-CREATE TABLE clipboard_item(
-  clipboard_item_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NULL,
-  clip TEXT NULL,
-  file_extension VARCHAR(10) NULL,
-  file_name VARCHAR(250) NULL,
-  type_id INT NULL,
-  created DATETIME ,
-  altered DATETIME NULL
-);
+	CREATE TABLE `clipboard_item` ( 
+    `clipboard_item_id` int(11) NOT NULL AUTO_INCREMENT, 
+    `user_id` int(11) DEFAULT NULL, 
+    `clip` text DEFAULT NULL, 
+    `created` datetime DEFAULT NULL, 
+    `altered` datetime DEFAULT NULL, 
+    `file_extension` varchar(10) DEFAULT NULL, `
+    file_name` varchar(250) DEFAULT NULL, 
+    `is_private` tinyint(4) DEFAULT 1, 
+    `is_private_for_other_user` tinyint(4) DEFAULT 0, 
+    `type_id` int(11) DEFAULT NULL, `other_user_id` int(11) DEFAULT NULL, 
+    `parent_clipboard_item_id` int(11) DEFAULT NULL, 
+    `modified_user_id` int(11) DEFAULT NULL,
+      PRIMARY KEY (`clipboard_item_id`) 
+    ) 
 
 CREATE TABLE `clipboard_item_type` ( 
   `clipboard_item_type_id` int(11) NOT NULL AUTO_INCREMENT, 
