@@ -1,6 +1,7 @@
 	CREATE TABLE `clipboard_item` ( 
     `clipboard_item_id` int(11) NOT NULL AUTO_INCREMENT, 
     `user_id` int(11) DEFAULT NULL, 
+	`other_user_id` int(11) NULL,
     `clip` text DEFAULT NULL, 
     `created` datetime DEFAULT NULL, 
     `altered` datetime DEFAULT NULL, 
